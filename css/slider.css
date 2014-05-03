@@ -1,0 +1,18 @@
+.slider.axis path {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1;
+}
+
+.slider.axis text {
+    font-family: monospace;
+    font-size: 10px;
+}
+
+.slider .handle {
+    fill: #ccc;
+    stroke: #999;
+    stroke-width: 1;
+    cursor: ew-resize;
+}
+
