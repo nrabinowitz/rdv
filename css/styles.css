@@ -1,0 +1,35 @@
+h2 {
+    margin: 0;
+    padding: 1em 0 0 15px;
+    font-size: 12px;
+    font-family: Helvetica, Trebuchet, sans-serif;
+}
+
+.ppp {
+    float: right;
+    font-size: 18px;
+}
+
+#vis {
+    padding: 15px;
+}
+
+#vis svg {
+    border: 1px solid #999;
+}
+
+#vis .axis path {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1;
+}
+
+#vis .axis text {
+    font-family: monospace;
+    font-size: 10px;
+}
+
+.circles circle {
+    fill: steelblue;
+    opacity: 0.7;
+}

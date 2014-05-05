@@ -11,7 +11,7 @@
 
 .slider .handle {
     fill: #ccc;
-    stroke: #999;
+    stroke: #666;
     stroke-width: 1;
     cursor: ew-resize;
 }
