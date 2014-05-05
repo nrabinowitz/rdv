@@ -125,7 +125,7 @@ window.scatterplot = function() {
                 binData[index]++;
             });
 
-            var color = d3.scale.linear()
+            var color = d3.scale.sqrt()
                 .domain([0, d3.max(binData)])
                 .range([0, 1]);
 

@@ -37,7 +37,7 @@
     var data = new Array(dataSize);
     var index = -1;
 
-    while (index++ < dataSize) data[index] = { x: gen(), y: gen() };
+    while (index++ < dataSize) data[index] = { x: gen(), y: gen(), name: 'Point ' + index };
 
     var currentData;
 
