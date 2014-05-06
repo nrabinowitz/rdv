@@ -32,13 +32,22 @@
     sizeControl.value(initialSize);
 
     // create fake data
-    var gen = d3.random.normal(70, 15);
+    function createData(dataSize) {
+        var gen1 = d3.random.normal(70, 15);
+        var gen2 = d3.random.normal(50, 8);
+        var gen = function(i) {
+            return i % 3 ? gen1() : gen2();
+        };
+        var data = new Array(dataSize);
+        var index = -1;
+
+        while (index++ < dataSize) data[index] = { x: gen(index), y: gen(index), name: 'Point ' + index };
+
+        return data;
+    }
+
     var dataSize = 1e6;
-    var data = new Array(dataSize);
-    var index = -1;
-
-    while (index++ < dataSize) data[index] = { x: gen(), y: gen(), name: 'Point ' + index };
-
+    var data = createData(dataSize);
     var currentData;
 
     function setDataSize(size) {

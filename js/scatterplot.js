@@ -4,6 +4,8 @@ window.scatterplot = function() {
     var vis;
 
     // range constants
+    var SUPER_LOW_RANGE = [0, 1e-4];
+    var VERY_LOW_RANGE = [0, 8e-4];
     var LOW_RANGE = [0, 5e-3];
     var MED_RANGE = [5e-3, 1e-2];
     var HIGH_RANGE = [1e-2, Infinity];
@@ -88,11 +90,22 @@ window.scatterplot = function() {
 
             circles.exit().remove();
 
+            // determine radius
+            var w = vis.w() - wMargin;
+            var h = vis.h() - hMargin;
+            var points = data.length;
+            var targetPPP = 2e-2;
+            var min = 2;
+            var max = 12;
+            var r = Math.sqrt(targetPPP * w * h / points);
+            r = Math.min(max, Math.max(min, r));
+
+            // TODO: Reduce vis size to reach min PPP
+
             circles.attr({
                 cx: function(d) { return x(d.x); },
                 cy: function(d) { return y(d.y); },
-                // XXX: responsive radius
-                r: 5
+                r: r
             });
         },
 
@@ -107,9 +120,11 @@ window.scatterplot = function() {
             var data = vis.data();
             var w = vis.w() - wMargin;
             var h = vis.h() - hMargin;
+            var targetPPP = 5e-3;
 
-            // XXX: responsive bin count
-            var binCount = 20;
+            // determine bin count
+            var binCount = ~~Math.sqrt(w * h * targetPPP);
+
             var xBin = d3.scale.quantize()
                 .domain(x.domain())
                 .range(d3.range(binCount));
@@ -154,11 +169,78 @@ window.scatterplot = function() {
         off: containerOff
     });
 
+    var circleHighlight = new rdv.Feature({
+        range: VERY_LOW_RANGE,
+
+        on: function(selection) {
+            selection.selectAll('.circles')
+                .on('mouseover.highlight', function() {
+                    d3.select(d3.event.target).style('fill', 'red');
+                })
+                .on('mouseout.highlight', function() {
+                    d3.select(d3.event.target).style('fill', null);
+                });
+        },
+
+        off: function(selection) {
+            selection.selectAll('.circles')
+                .on('mouseover.highlight', null)
+                .on('mouseout.highlight', null);
+        }
+    });
+
+    var circleLabels = new rdv.Feature({
+        range: SUPER_LOW_RANGE,
+
+        container: null,
+
+        on: function(selection) {
+            var data = vis.data();
+
+            container.call(this, selection, 'labels');
+
+            var labels = this.container.selectAll('text')
+                .data(data);
+
+            labels.enter().append('text');
+
+            labels.exit().remove();
+
+            var w = vis.w() - wMargin;
+            var h = vis.h() - hMargin;
+
+            labels
+                .attr({
+                    x: function(d) { return x(d.x); },
+                    y: function(d) { return y(d.y); },
+                    dy: function(d) {
+                        return y(d.y) > 40 ? '-15px' : '25px';
+                    },
+                    dx: function(d) {
+                        var xpos = x(d.x);
+                        return xpos < 20 ? '-13px' :
+                            xpos > w - 20 ? '13px' :
+                            '0';
+                    },
+                    'text-anchor': function(d) {
+                        var xpos = x(d.x);
+                        return xpos < 20 ? 'start' :
+                            xpos > w - 20 ? 'end' :
+                            'middle';
+                    }
+                })
+                .text(function(d) { return d.name; });
+        },
+
+        off: containerOff
+    });
 
     var features = [
         axes,
         circles,
-        bins
+        bins,
+        circleLabels,
+        circleHighlight
     ];
 
     vis = rdv.Vis(features, margin, rdv.TWOD);

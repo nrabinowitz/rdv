@@ -24,6 +24,11 @@ h2 {
     stroke-width: 1;
 }
 
+#vis text {
+    font-size: 12px;
+    font-family: Helvetica, Trebuchet, sans-serif;
+}
+
 #vis .axis text {
     font-family: monospace;
     font-size: 10px;
