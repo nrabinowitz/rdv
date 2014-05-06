@@ -7,8 +7,7 @@
     var aspect = 1.2;
 
     var chart = scatterplot();
-
-    chart.features([
+    var features = [
         chart.axes,
         chart.circles,
         chart.bins,
@@ -18,7 +17,9 @@
         chart.binSelection,
         chart.tooltips,
         chart.bintips
-    ]);
+    ];
+
+    chart.features(features);
 
     // create vis container
     var vis = d3.select('#vis').append('svg')
@@ -91,7 +92,14 @@
 
     function updatePPP() {
         var ppp = chart.ppp();
-        d3.select('#ppp').text(ppp.toFixed(8));
+        var currentFeatures = features.filter(function(f) {
+            return f.applies(ppp);
+        });
+        var currentFeatureNames = currentFeatures.map(function(f) {
+            return f.name;
+        });
+        d3.select('#ppp').html(ppp.toFixed(8));
+        d3.select('#features').html(currentFeatureNames.join('<br>'));
     }
 
     chart

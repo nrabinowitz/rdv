@@ -13,6 +13,11 @@ h2 {
     float: right;
     font-size: 18px;
 }
+#features {
+    clear: both;
+    float: right;
+    text-align: right;
+}
 
 #vis {
     padding: 15px;

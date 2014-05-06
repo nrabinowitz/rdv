@@ -53,6 +53,7 @@ window.scatterplot = function() {
     }
 
     vis.axes = new rdv.Feature({
+        name: "Axes",
         on: function(selection) {
             var vis = this.vis;
 
@@ -82,6 +83,7 @@ window.scatterplot = function() {
     });
 
     vis.circles = new rdv.Feature({
+        name: "Points",
         range: LOW_RANGE,
         container: null,
 
@@ -121,6 +123,7 @@ window.scatterplot = function() {
     });
 
     vis.bins = new rdv.Feature({
+        name: "Bins",
         range: MED_HIGH_RANGE,
         container: null,
 
@@ -192,6 +195,7 @@ window.scatterplot = function() {
     }
 
     vis.pointSelection = new rdv.Feature({
+        name: "Point Selection",
         range: VERY_LOW_RANGE,
 
         on: function(selection) {
@@ -227,6 +231,7 @@ window.scatterplot = function() {
     });
 
     vis.brushSelection = new rdv.Feature({
+        name: "Brush Selection",
         range: HIGH_LOW_RANGE,
         container: null,
         brush: d3.svg.brush(),
@@ -274,6 +279,7 @@ window.scatterplot = function() {
     });
 
     vis.binSelection = new rdv.Feature({
+        name: "Bin Selection",
         range: MED_HIGH_RANGE,
 
         on: function(selection) {
@@ -309,6 +315,7 @@ window.scatterplot = function() {
     });
 
     vis.labels = new rdv.Feature({
+        name: "Data Labels",
         range: SUPER_LOW_RANGE,
 
         container: null,
@@ -355,6 +362,7 @@ window.scatterplot = function() {
     });
 
     vis.tooltips = new rdv.Feature({
+        name: "Data Tooltips",
         range: MED_LOW_RANGE,
         tip: null,
 
@@ -379,6 +387,7 @@ window.scatterplot = function() {
     });
 
     vis.bintips = new rdv.Feature({
+        name: "Bin Tooltips",
         range: MED_HIGH_RANGE,
         tip: null,
 
