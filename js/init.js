@@ -32,8 +32,6 @@
         chart.resize().render();
     }
 
-    resizeVis(initialSize);
-
     // slider for vis container size
 
     var sizeControl = sliderControl()
@@ -87,6 +85,7 @@
 
     d3.select('#data-slider').call(dataControl);
     dataControl.value(initialDataCount);
+    resizeVis(initialSize);
 
     // PPP indicator
 

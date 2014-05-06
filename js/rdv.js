@@ -33,8 +33,9 @@
 
     rdv.Feature = Feature;
 
-    rdv.Vis = function(dimensionality) {
+    rdv.Vis = function(dimensionality, minPPP) {
         dimensionality = dimensionality || TWOD;
+        minPPP = minPPP || 0;
 
         var selection;
         var data = [];

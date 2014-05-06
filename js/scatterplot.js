@@ -11,6 +11,7 @@ window.scatterplot = function() {
     var MED_RANGE = [5e-3, 1e-2];
     var HIGH_RANGE = [1e-2, Infinity];
     var MED_HIGH_RANGE = [MED_RANGE[0], HIGH_RANGE[1]];
+    var MIN_PPP = 2e-5;
 
     // margins
     var margin = { top: 15, bottom: 30, right: 15, left: 30 };
@@ -18,7 +19,7 @@ window.scatterplot = function() {
     var hMargin = margin.top + margin.bottom;
 
     // vis
-    var vis = rdv.Vis(rdv.TWOD)
+    var vis = rdv.Vis(rdv.TWOD, MIN_PPP)
         .margin(margin);
 
     // scales
