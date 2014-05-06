@@ -6,6 +6,7 @@ window.scatterplot = function() {
     var SUPER_LOW_RANGE = [0, 1e-4];
     var VERY_LOW_RANGE = [0, 8e-4];
     var LOW_RANGE = [0, 5e-3];
+    var MED_LOW_RANGE = [1e-4, 5e-3];
     var HIGH_LOW_RANGE = [8e-4, 5e-3];
     var MED_RANGE = [5e-3, 1e-2];
     var HIGH_RANGE = [1e-2, Infinity];
@@ -351,6 +352,55 @@ window.scatterplot = function() {
 
         off: containerOff
     });
+
+    vis.tooltips = new rdv.Feature({
+        range: MED_LOW_RANGE,
+        tip: null,
+
+        on: function(selection) {
+            var tip = this.tip || d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-5, 0])
+                .html(function(d) { return d.name; });
+
+            selection.call(tip);
+
+            selection.selectAll('.circles circle')
+                .on('mouseover.tip', tip.show)
+                .on('mouseout.tip', tip.hide);
+        },
+
+        off: function(selection) {
+            selection.selectAll('.circles circle')
+                .on('mouseover.tip', null)
+                .on('mouseout.tip', null);
+        }
+    });
+
+    vis.bintips = new rdv.Feature({
+        range: MED_HIGH_RANGE,
+        tip: null,
+
+        on: function(selection) {
+            var tip = this.tip || d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-5, 0])
+                .html(function(d) { return d + ' points'; });
+
+            selection.call(tip);
+
+            selection.selectAll('.bins rect')
+                .on('mouseover.tip', tip.show)
+                .on('mouseout.tip', tip.hide);
+        },
+
+        off: function(selection) {
+            selection.selectAll('.bins rect')
+                .on('mouseover.tip', null)
+                .on('mouseout.tip', null);
+        }
+    });
+
 
     vis.on('data', function(data) {
         x.domain(d3.extent(data, function(d) { return d.x; })).nice();

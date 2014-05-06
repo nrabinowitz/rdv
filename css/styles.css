@@ -24,7 +24,8 @@ h2 {
     stroke-width: 1;
 }
 
-#vis text {
+#vis text,
+.d3-tip {
     font-size: 12px;
     font-family: Helvetica, Trebuchet, sans-serif;
 }
