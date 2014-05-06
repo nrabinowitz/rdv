@@ -38,3 +38,14 @@ h2 {
     fill: steelblue;
     opacity: 0.7;
 }
+.circles .selected,
+.circles .selected-brush {
+    fill: red;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+

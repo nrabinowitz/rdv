@@ -6,6 +6,7 @@ window.scatterplot = function() {
     var SUPER_LOW_RANGE = [0, 1e-4];
     var VERY_LOW_RANGE = [0, 8e-4];
     var LOW_RANGE = [0, 5e-3];
+    var HIGH_LOW_RANGE = [8e-4, 5e-3];
     var MED_RANGE = [5e-3, 1e-2];
     var HIGH_RANGE = [1e-2, Infinity];
     var MED_HIGH_RANGE = [MED_RANGE[0], HIGH_RANGE[1]];
@@ -14,6 +15,10 @@ window.scatterplot = function() {
     var margin = { top: 15, bottom: 30, right: 15, left: 30 };
     var wMargin = margin.left + margin.right;
     var hMargin = margin.top + margin.bottom;
+
+    // vis
+    var vis = rdv.Vis(rdv.TWOD)
+        .margin(margin);
 
     // scales
     var x = d3.scale.linear();
@@ -45,7 +50,7 @@ window.scatterplot = function() {
             this.container = null;
     }
 
-    var axes = new rdv.Feature({
+    vis.axes = new rdv.Feature({
         on: function(selection) {
             var vis = this.vis;
 
@@ -74,7 +79,7 @@ window.scatterplot = function() {
         }
     });
 
-    var circles = new rdv.Feature({
+    vis.circles = new rdv.Feature({
         range: LOW_RANGE,
         container: null,
 
@@ -113,7 +118,7 @@ window.scatterplot = function() {
         off: containerOff
     });
 
-    var bins = new rdv.Feature({
+    vis.bins = new rdv.Feature({
         range: MED_HIGH_RANGE,
         container: null,
 
@@ -171,27 +176,90 @@ window.scatterplot = function() {
         off: containerOff
     });
 
-    var circleHighlight = new rdv.Feature({
+    var selected = [];
+
+    function toggleSelection(d, toggle) {
+        var index = selected.indexOf(d);
+        toggle = toggle !== undefined ? toggle : index < 0;
+        if (toggle) selected.push(d);
+        else selected.splice(index, 1);
+        return toggle;
+    }
+
+    vis.pointSelection = new rdv.Feature({
         range: VERY_LOW_RANGE,
 
         on: function(selection) {
-            selection.selectAll('.circles')
-                .on('mouseover.highlight', function() {
-                    d3.select(d3.event.target).style('fill', 'red');
+
+            function highlight() {
+                d3.select(this).style('fill', 'red');
+            }
+
+            function clearHighlight() {
+                d3.select(this).style('fill', null);
+            }
+
+            selection.selectAll('.circles circle')
+                .classed('selected', function(d) {
+                    return selected.indexOf(d) >= 0;
                 })
-                .on('mouseout.highlight', function() {
-                    d3.select(d3.event.target).style('fill', null);
+                .style('cursor', 'pointer')
+                .on('mouseover.highlight', highlight)
+                .on('mouseout.highlight', clearHighlight)
+                .on('click.selection', function(d) {
+                    var toggle = toggleSelection(d);
+                    d3.select(this).classed('selected', toggle);
+                    if (!toggle) clearHighlight.call(this);
                 });
         },
 
         off: function(selection) {
-            selection.selectAll('.circles')
+            selection.selectAll('.circles circle')
+                .classed('selected', false)
+                .style('cursor', 'normal')
                 .on('mouseover.highlight', null)
-                .on('mouseout.highlight', null);
+                .on('mouseout.highlight', null)
+                .on('click.selection', null);
         }
     });
 
-    var circleLabels = new rdv.Feature({
+    vis.brushSelection = new rdv.Feature({
+        range: HIGH_LOW_RANGE,
+        container: null,
+        brush: d3.svg.brush(),
+
+        on: function(selection) {
+            var brush = this.brush;
+            var circles = d3.selectAll('.circles circle');
+
+            brush
+                .x(x)
+                .y(y)
+                .on('brush', function() {
+                    var extent = brush.extent();
+                    circles.each(function(d) {
+                        var isSelected =
+                            extent[0][0] < d.x &&
+                            d.x < extent[1][0] &&
+                            extent[0][1] < d.y &&
+                            d.y < extent[1][1];
+                        toggleSelection(d, isSelected);
+                        d3.select(this).classed('selected-brush', isSelected);
+                    });
+                });
+
+            container.call(this, selection, 'brush');
+            this.container.call(brush);
+        },
+
+        off: function(selection) {
+            containerOff.call(this, selection);
+            selection.selectAll('.circles circle')
+                .classed('selected-brush', false);
+        }
+    });
+
+    vis.labels = new rdv.Feature({
         range: SUPER_LOW_RANGE,
 
         container: null,
@@ -236,16 +304,6 @@ window.scatterplot = function() {
 
         off: containerOff
     });
-
-    var features = [
-        axes,
-        circles,
-        bins,
-        circleLabels,
-        circleHighlight
-    ];
-
-    var vis = rdv.Vis(features, margin, rdv.TWOD);
 
     vis.on('data', function(data) {
         x.domain(d3.extent(data, function(d) { return d.x; })).nice();

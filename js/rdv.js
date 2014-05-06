@@ -33,12 +33,13 @@
 
     rdv.Feature = Feature;
 
-    rdv.Vis = function(features, margin, dimensionality) {
+    rdv.Vis = function(dimensionality) {
         dimensionality = dimensionality || TWOD;
-        margin = margin || { top: 0, bottom: 0, right: 0, left: 0 };
 
         var selection;
         var data = [];
+        var features = [];
+        var margin = margin || { top: 0, bottom: 0, right: 0, left: 0 };
         var w;
         var h;
         var dispatch = d3.dispatch('data', 'resize');
@@ -47,11 +48,6 @@
         function vis(sel) {
             selection = sel;
         }
-
-        // add vis ref to features
-        features.forEach(function(feature) {
-            feature.vis = vis;
-        });
 
         function getPPP() {
             var ew = w - margin.right - margin.left;
@@ -88,12 +84,40 @@
             return data;
         };
 
-        vis.w = function() {
+        vis.features = function(d) {
+            if (d) {
+                features = d;
+                // add vis ref to features
+                features.forEach(function(feature) {
+                    feature.vis = vis;
+                });
+                return vis;
+            }
+            return data;
+        };
+
+        vis.w = function(d) {
+            if (d !== undefined) {
+                w = d;
+                return vis;
+            }
             return w;
         };
 
-        vis.h = function() {
+        vis.h = function(d) {
+            if (d !== undefined) {
+                h = d;
+                return vis;
+            }
             return h;
+        };
+
+        vis.margin = function(d) {
+            if (d !== undefined) {
+                margin = d;
+                return vis;
+            }
+            return margin;
         };
 
         vis.on = function() {

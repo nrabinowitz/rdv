@@ -8,6 +8,15 @@
 
     var chart = scatterplot();
 
+    chart.features([
+        chart.axes,
+        chart.circles,
+        chart.bins,
+        chart.labels,
+        chart.pointSelection,
+        chart.brushSelection
+    ]);
+
     // create vis container
     var vis = d3.select('#vis').append('svg')
         .call(chart);
