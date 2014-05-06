@@ -14,7 +14,8 @@
         chart.bins,
         chart.labels,
         chart.pointSelection,
-        chart.brushSelection
+        chart.brushSelection,
+        chart.binSelection
     ]);
 
     // create vis container

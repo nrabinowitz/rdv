@@ -43,6 +43,13 @@ h2 {
     fill: red;
 }
 
+.bins rect {
+    fill: steelblue;
+}
+.bins .selected {
+    fill: red;
+}
+
 .brush .extent {
   stroke: #fff;
   fill-opacity: .125;

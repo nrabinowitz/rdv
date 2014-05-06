@@ -156,8 +156,7 @@ window.scatterplot = function() {
             var bins = this.container.selectAll('rect')
                 .data(binData);
 
-            bins.enter().append('rect')
-                .style('fill', 'steelblue');
+            bins.enter().append('rect');
 
             bins.exit().remove();
 
@@ -269,6 +268,41 @@ window.scatterplot = function() {
             containerOff.call(this, selection);
             selection.selectAll('.circles circle')
                 .classed('selected-brush', false);
+        }
+    });
+
+    vis.binSelection = new rdv.Feature({
+        range: MED_HIGH_RANGE,
+
+        on: function(selection) {
+
+            function highlight() {
+                d3.select(this).style('fill', 'red');
+            }
+
+            function clearHighlight() {
+                d3.select(this).style('fill', null);
+            }
+
+            selection.selectAll('.bins rect')
+                .style('cursor', 'pointer')
+                .on('mouseover.highlight', highlight)
+                .on('mouseout.highlight', clearHighlight)
+                .on('click.selection', function() {
+                    var rect = d3.select(this);
+                    var toggle = !rect.classed('selected');
+                    rect.classed('selected', toggle);
+                    if (!toggle) clearHighlight.call(this);
+                });
+        },
+
+        off: function(selection) {
+            selection.selectAll('.bins rect')
+                .classed('selected', false)
+                .style('cursor', 'normal')
+                .on('mouseover.highlight', null)
+                .on('mouseout.highlight', null)
+                .on('click.selection', null);
         }
     });
 
