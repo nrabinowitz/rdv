@@ -1,7 +1,6 @@
 /* global rdv */
 
 window.scatterplot = function() {
-    var vis;
 
     // range constants
     var SUPER_LOW_RANGE = [0, 1e-4];
@@ -48,6 +47,7 @@ window.scatterplot = function() {
 
     var axes = new rdv.Feature({
         on: function(selection) {
+            var vis = this.vis;
 
             var containerEntry = container.call(this, selection, 'axes');
 
@@ -79,6 +79,7 @@ window.scatterplot = function() {
         container: null,
 
         on: function(selection) {
+            var vis = this.vis;
             var data = vis.data();
 
             container.call(this, selection, 'circles');
@@ -117,6 +118,7 @@ window.scatterplot = function() {
         container: null,
 
         on: function(selection) {
+            var vis = this.vis;
             var data = vis.data();
             var w = vis.w() - wMargin;
             var h = vis.h() - hMargin;
@@ -195,6 +197,7 @@ window.scatterplot = function() {
         container: null,
 
         on: function(selection) {
+            var vis = this.vis;
             var data = vis.data();
 
             container.call(this, selection, 'labels');
@@ -207,7 +210,6 @@ window.scatterplot = function() {
             labels.exit().remove();
 
             var w = vis.w() - wMargin;
-            var h = vis.h() - hMargin;
 
             labels
                 .attr({
@@ -243,7 +245,7 @@ window.scatterplot = function() {
         circleHighlight
     ];
 
-    vis = rdv.Vis(features, margin, rdv.TWOD);
+    var vis = rdv.Vis(features, margin, rdv.TWOD);
 
     vis.on('data', function(data) {
         x.domain(d3.extent(data, function(d) { return d.x; })).nice();

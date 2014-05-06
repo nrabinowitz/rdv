@@ -15,6 +15,7 @@
 
     Feature.prototype = {
         range: [0, Infinity],
+        vis: null,
         on: noop,
         off: noop,
 
@@ -46,6 +47,11 @@
         function vis(sel) {
             selection = sel;
         }
+
+        // add vis ref to features
+        features.forEach(function(feature) {
+            feature.vis = vis;
+        });
 
         function getPPP() {
             var ew = w - margin.right - margin.left;
