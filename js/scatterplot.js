@@ -186,6 +186,10 @@ window.scatterplot = function() {
         return toggle;
     }
 
+    function datumSelected(d) {
+        return selected.indexOf(d) >= 0;
+    }
+
     vis.pointSelection = new rdv.Feature({
         range: VERY_LOW_RANGE,
 
@@ -200,9 +204,7 @@ window.scatterplot = function() {
             }
 
             selection.selectAll('.circles circle')
-                .classed('selected', function(d) {
-                    return selected.indexOf(d) >= 0;
-                })
+                .classed('selected', datumSelected)
                 .style('cursor', 'pointer')
                 .on('mouseover.highlight', highlight)
                 .on('mouseout.highlight', clearHighlight)
@@ -230,7 +232,11 @@ window.scatterplot = function() {
 
         on: function(selection) {
             var brush = this.brush;
-            var circles = d3.selectAll('.circles circle');
+            var circles = d3.selectAll('.circles circle')
+                .classed('selected-brush', datumSelected);
+
+            container.call(this, selection, 'brush');
+            var brushLayer = this.container;
 
             brush
                 .x(x)
@@ -246,10 +252,17 @@ window.scatterplot = function() {
                         toggleSelection(d, isSelected);
                         d3.select(this).classed('selected-brush', isSelected);
                     });
+                })
+                .on('brushend', function() {
+                    brush.clear();
+                    brushLayer.selectAll('.extent')
+                        .attr('width', 0)
+                        .attr('height', 0)
+                        .attr('x', 0)
+                        .attr('y', 0);
                 });
 
-            container.call(this, selection, 'brush');
-            this.container.call(brush);
+            brushLayer.call(brush);
         },
 
         off: function(selection) {
