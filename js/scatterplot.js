@@ -411,6 +411,18 @@ window.scatterplot = function() {
         }
     });
 
+    // Add features to vis
+    vis.features([
+        vis.axes,
+        vis.circles,
+        vis.bins,
+        vis.labels,
+        vis.pointSelection,
+        vis.brushSelection,
+        vis.binSelection,
+        vis.tooltips,
+        vis.bintips
+    ]);
 
     vis.on('data', function(data) {
         x.domain(d3.extent(data, function(d) { return d.x; })).nice();
@@ -421,6 +433,7 @@ window.scatterplot = function() {
         x.range([0, w - wMargin]);
         y.range([h - hMargin, 0]);
     });
+
 
     return vis;
 

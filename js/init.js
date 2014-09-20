@@ -7,19 +7,7 @@
     var aspect = 1.2;
 
     var chart = scatterplot();
-    var features = [
-        chart.axes,
-        chart.circles,
-        chart.bins,
-        chart.labels,
-        chart.pointSelection,
-        chart.brushSelection,
-        chart.binSelection,
-        chart.tooltips,
-        chart.bintips
-    ];
-
-    chart.features(features);
+    var features = chart.features();
 
     // create vis container
     var vis = d3.select('#vis').append('svg')
