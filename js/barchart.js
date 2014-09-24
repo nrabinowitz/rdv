@@ -3,6 +3,7 @@
 window.barchart = function() {
     var VERY_LOW_RANGE = [0, 0.08];
     var LOW_RANGE = [0, 0.7];
+    var VERY_LOW_TO_HIGH = [0.08, Infinity];
     var HIGH_RANGE = [0.7, Infinity];
     var MIN_PPP = 0;
 
@@ -86,6 +87,41 @@ window.barchart = function() {
         off: containerOff
     });
 
+    vis.mouseLabels = new rdv.Feature({
+        name: "Mouseover Labels",
+        range: VERY_LOW_TO_HIGH,
+        container: null,
+
+        on: function(selection) {
+            var vis = this.vis;
+            var data = vis.data();
+
+            var containerEntry = container.call(this, selection, 'mouse-labels');
+
+            var label = containerEntry.append("text")
+                .attr({
+                    'text-anchor': 'end',
+                    'dy': '1em',
+                    'dx': -3
+                });
+
+            function update(index) {
+                var over = data[index];
+                var toBind = over ? [over] : [];
+
+                label.data(toBind);
+
+                label
+                    .text(function(d) { return d.name; })
+                    .attr('y', projectName);
+            }
+
+            update(data.length - 1);
+        },
+
+        off: containerOff
+    });
+
     vis.bars = new rdv.Feature({
         name: "Bars",
         range: LOW_RANGE,
@@ -127,10 +163,20 @@ window.barchart = function() {
             var vis = this.vis;
             var data = vis.data();
 
+            // Use the PPP ratio as the step to sample the data
+            var step = Math.round(vis.ppp());
+            var sample = [];
+            var index = data.length - 1;
+
+            while (index >= 0) {
+                sample.unshift(data[index]);
+                index -= step;
+            }
+
             container.call(this, selection, 'poly');
 
             var poly = this.container.selectAll('path')
-                .data([data]);
+                .data([sample]);
 
             poly.enter().append('path');
 
@@ -149,6 +195,7 @@ window.barchart = function() {
     // Add features to vis
     vis.features([
         vis.yaxis,
+        vis.mouseLabels,
         vis.xaxis,
         vis.bars,
         vis.poly
