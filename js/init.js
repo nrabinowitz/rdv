@@ -1,4 +1,4 @@
-/* global sliderControl, scatterplot */
+/* global sliderControl, scatterplot, barchart */
 
 (function() {
 
@@ -6,7 +6,7 @@
     var initialDataCount = 5;
     var aspect = 1.2;
 
-    var chart = scatterplot();
+    var chart = barchart();
     var features = chart.features();
 
     // create vis container
