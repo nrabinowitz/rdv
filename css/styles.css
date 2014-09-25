@@ -3,11 +3,23 @@ body {
     font-family: Helvetica, Trebuchet, sans-serif;
 }
 
+p {
+    max-width: 40em;
+}
+
 h2 {
     margin: 0;
     padding: 1em 0 0 15px;
     font-size: 12px;
     font-family: Helvetica, Trebuchet, sans-serif;
+}
+
+.contribute img {
+    position: fixed;
+    top: 0;
+    right: 0;
+    border: 0;
+    z-index: 9999;
 }
 
 .ppp {
