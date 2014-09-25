@@ -93,30 +93,46 @@ window.barchart = function() {
         container: null,
 
         on: function(selection) {
-            var vis = this.vis;
+            var feature = this;
+            var vis = feature.vis;
             var data = vis.data();
 
-            var containerEntry = container.call(this, selection, 'mouse-labels');
+            var containerEntry = container.call(feature, selection, 'mouse-labels');
 
-            var label = containerEntry.append("text")
-                .attr({
-                    'text-anchor': 'end',
-                    'dy': '1em',
-                    'dx': -3
-                });
 
             function update(index) {
                 var over = data[index];
                 var toBind = over ? [over] : [];
 
-                label.data(toBind);
+                var label = feature.container.selectAll('text.label')
+                    .data(toBind);
+
+                label.enter().append("text")
+                    .attr({
+                        'class': 'label',
+                        'text-anchor': 'end',
+                        'dy': '0.5em',
+                        'dx': -3
+                    });
+
+                label.exit().remove();
 
                 label
                     .text(function(d) { return d.name; })
                     .attr('y', projectName);
             }
 
-            update(data.length - 1);
+            selection
+                .on('mousemove.label', function() {
+                    var mousePos = d3.mouse(feature.container.node());
+                    var categories = y.domain().length;
+                    var l = vis.h() - hMargin;
+                    var m = l - mousePos[1];
+
+                    var n = ~~(categories * m / l);
+
+                    update(n);
+                });
         },
 
         off: containerOff

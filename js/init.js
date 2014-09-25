@@ -6,7 +6,10 @@
     var initialDataCount = 5;
     var aspect = 1.2;
 
-    var chart = barchart();
+    var chartClass = window.location.search.match(/barchart/) ?
+        barchart : scatterplot;
+
+    var chart = chartClass();
     var features = chart.features();
 
     // create vis container
